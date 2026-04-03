@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface AuthState {
   user: User | null;
@@ -19,40 +19,57 @@ export const useAuthStore = create<AuthState>((set) => ({
   initialized: false,
 
   initialize: async () => {
-    // Check if there's already a session
-    const { data: { session } } = await supabase.auth.getSession();
-    set({ user: session?.user ?? null, initialized: true });
+    if (!isSupabaseConfigured) {
+      // No credentials — skip and mark as initialized so the app renders
+      set({ initialized: true });
+      return;
+    }
 
-    // Listen for future auth changes
-    supabase.auth.onAuthStateChange((_event, session) => {
-      set({ user: session?.user ?? null });
-    });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      set({ user: session?.user ?? null, initialized: true });
+
+      supabase.auth.onAuthStateChange((_event, session) => {
+        set({ user: session?.user ?? null });
+      });
+    } catch {
+      // If Supabase call fails for any reason, still mark initialized
+      set({ initialized: true });
+    }
   },
 
   signIn: async (email, password) => {
     set({ loading: true });
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    set({ loading: false });
-    if (error) return error.message;
-    return null;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      set({ loading: false });
+      if (error) return error.message;
+      return null;
+    } catch {
+      set({ loading: false });
+      return 'Error de conexión. Verifica tu configuración de Supabase.';
+    }
   },
 
   signUp: async (email, password, fullName) => {
     set({ loading: true });
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-      },
-    });
-    set({ loading: false });
-    if (error) return error.message;
-    return null;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      set({ loading: false });
+      if (error) return error.message;
+      return null;
+    } catch {
+      set({ loading: false });
+      return 'Error de conexión. Verifica tu configuración de Supabase.';
+    }
   },
 
   signOut: async () => {
-    await supabase.auth.signOut();
+    try { await supabase.auth.signOut(); } catch { /* ignore */ }
     set({ user: null });
   },
 }));

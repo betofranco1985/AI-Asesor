@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useFinancialStore } from './store/financialStore';
+import { isSupabaseConfigured } from './lib/supabase';
 import Layout from './components/Layout/Layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Auth from './pages/Auth';
+import Setup from './pages/Setup';
 import Dashboard from './pages/Dashboard';
 import Ingresos from './pages/Ingresos';
 import Egresos from './pages/Egresos';
@@ -13,6 +15,11 @@ import Pasivos from './pages/Pasivos';
 import Analisis from './pages/Analisis';
 
 function AppRoutes() {
+  // Show setup instructions if Supabase is not yet configured
+  if (!isSupabaseConfigured) {
+    return <Setup />;
+  }
+
   const { user, initialized, initialize } = useAuthStore();
   const { loadUserData, clearUserData } = useFinancialStore();
 
