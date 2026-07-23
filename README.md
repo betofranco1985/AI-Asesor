@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# Bolsa Sin Ruido — Sitio web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Landing page de **Bolsa Sin Ruido**: inversión activa en bolsa de valores (acciones, ETFs e índices)
+con un proceso institucional. Interfaz minimalista oscura inspirada en terminales de mercado, con la
+paleta oficial del Documento Maestro (azul profundo `#0B1D2D`, teal `#1CA6A6`, gris técnico `#B7C1CC`)
+y tipografía Inter.
 
-Currently, two official plugins are available:
+## Secciones
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Hero** — propuesta de valor directa + mockup del Dashboard Semanal (semáforo de mercado, S&P 500, mapa sectorial)
+- **Manifiesto** — El Ruido vs. La Señal
+- **Método 4C** — Contexto, Concentración, Configuración, Control
+- **Transformación** — antes / después del cliente
+- **Ecosistema** — los niveles del funnel (Dashboard Semanal, Starter Kit, Sala Sin Ruido, Trend Edge 4C, Sesiones de Capital)
+- **FAQ** — preguntas frecuentes (con datos estructurados `FAQPage`)
+- **CTA** — captación de correo para el Dashboard Semanal
+- **Footer** — aviso de compliance: contenido educativo, cero señales de compra/venta
 
-## React Compiler
+## SEO
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `index.html` con título, meta description, keywords, Open Graph, Twitter Cards y canonical en español
+- Datos estructurados JSON-LD: `Organization`, `WebSite` y `FAQPage`
+- HTML semántico (`h1`–`h3`, `section`, `article`, `nav`, `footer`) con keywords de intención:
+  *invertir en bolsa, acciones, ETFs, gestión de riesgo, análisis técnico, mercado de valores*
 
-## Expanding the ESLint configuration
+> Nota: el canonical apunta a `https://bolsasinruido.com/` como marcador; ajústalo al dominio real al publicar.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+React 19 + TypeScript + Vite 8 + Tailwind CSS 4.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # desarrollo
+npm run build    # producción (dist/)
+npm run preview  # servir el build
 ```

@@ -1,16 +1,107 @@
 @import "tailwindcss";
 
+@theme {
+  /* Paleta oficial "Bolsa Sin Ruido" (Documento Maestro §4) */
+  --color-abyss: #06111c;      /* fondo base */
+  --color-deep: #0b1d2d;       /* azul profundo institucional */
+  --color-panel: #0d2032;      /* superficies / tarjetas */
+  --color-panel-2: #102638;    /* superficie elevada */
+  --color-teal: #1ca6a6;       /* acento oficial */
+  --color-teal-bright: #2dd4bf;/* acento luminoso */
+  --color-mist: #b7c1cc;       /* gris técnico */
+  --color-snow: #f2f6fa;       /* titulares */
+  --color-up: #34d399;         /* mercado al alza */
+  --color-down: #f87171;       /* mercado a la baja */
+  --color-warn: #fbbf24;       /* semáforo amarillo */
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
+  background: var(--color-abyss);
+  color: var(--color-mist);
   -webkit-font-smoothing: antialiased;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
+}
+
+/* Borde con brillo degradado (referencia visual: marco azul→violeta→rosa) */
+.glow-frame {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1px;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 45%, #db2777 100%);
+}
+.glow-frame::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 45%, #db2777 100%);
+  filter: blur(42px);
+  opacity: 0.28;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Cuadrícula sutil de fondo (estética de terminal) */
+.grid-bg {
+  position: relative;
+}
+.grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(183, 193, 204, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(183, 193, 204, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  pointer-events: none;
+}
+.grid-bg > * {
+  position: relative;
+}
+
+/* Cinta de cotizaciones */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 48s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* Acordeón FAQ */
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+details.faq summary::after {
+  content: "+";
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-teal-bright);
+  transition: transform 0.2s ease;
+}
+details.faq[open] summary::after {
+  transform: rotate(45deg);
 }
